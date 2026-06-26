@@ -13,7 +13,7 @@ const Login = () => {
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: async () => {
-      const response = await axiosInstance.post("/login", loginData);
+      const response = await axiosInstance.post("/auth/login", loginData);
       return response.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),

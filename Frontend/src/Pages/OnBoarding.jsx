@@ -22,7 +22,7 @@ const OnBoarding = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-    const response = await axiosInstance.post("/onboarding", formState);
+    const response = await axiosInstance.post("/auth/onboarding", formState);
     return response.data;
     },
 

@@ -23,9 +23,9 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/", authRouter);
-app.use("/", userRouter);
-app.use("/chat", chatRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+app.use("/api/chat", chatRouter);
 
 if(process.env.NODE_ENV === "production"){
   app.use(express.static(path.join(__dirname, "../Frontend/dist")));

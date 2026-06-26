@@ -14,7 +14,7 @@ const Navbar = () => {
 
   const { mutate: logoutMutation } = useMutation({
     mutationFn: async () => {
-      const res = await axiosInstance.post("/logout");
+      const res = await axiosInstance.post("/auth/logout");
       return res.data;
     },
     onSuccess: () => {

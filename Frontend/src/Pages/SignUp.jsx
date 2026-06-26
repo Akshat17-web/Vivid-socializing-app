@@ -15,7 +15,7 @@ const SignUp = () => {
   const queryClient = useQueryClient();
   const { mutate, isPending, error } = useMutation({
     mutationFn: async () => {
-      const response = await axiosInstance.post("/signup", signupData);
+      const response = await axiosInstance.post("/auth/signup", signupData);
       return response.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
