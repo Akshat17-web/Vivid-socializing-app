@@ -25,6 +25,6 @@ export const generateStreamToken = (userId) => {
         const userIdStr = userId.toString();
         return streamClient.createToken(userIdStr);
     }catch(err){
-        console.eror("Error generating Stream token: ", err);
+        console.error("Error generating Stream token: ", err);
     }
 }

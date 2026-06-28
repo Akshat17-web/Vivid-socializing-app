@@ -129,7 +129,7 @@ userRouter.put("/friend-request/:reqId/accept", async (req, res) => {
 
     res.status(200).json({ message: "Friend request accepted" });
   } catch (err) {
-    console.log("Error in accepting friend request", error.message);
+    console.log("Error in accepting friend request", err.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
@@ -168,7 +168,7 @@ userRouter.get("/friend-request-sent", async (req, res) => {
     );
     res.status(200).json(sentRequests);
   } catch (err) {
-    console.log("Error in getting sent friend requests ", error.message);
+    console.log("Error in getting sent friend requests ", err.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

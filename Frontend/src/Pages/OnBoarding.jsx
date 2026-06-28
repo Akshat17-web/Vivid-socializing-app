@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import useAuthUser from "../hooks/useAuthUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-// import { completeOnboarding } from "../lib/api";
-import { Globe, LoaderIcon, MapPin, ShipWheel, ShipWheelIcon, Shuffle, User } from "lucide-react";
+import { LoaderIcon, MapPin, ShipWheelIcon, User } from "lucide-react";
 import { LANGUAGES } from "../constants";
 import { axiosInstance } from "../lib/axios";
+import PageLoader from "../components/PageLoader";
 
 const OnBoarding = () => {
-  const { authUser } = useAuthUser();
+  const { authUser, isLoading } = useAuthUser();
+
+  if (isLoading) {
+    return <PageLoader />;
+  }
+
+  return <OnBoardingForm authUser={authUser} />;
+};
+
+const OnBoardingForm = ({ authUser }) => {
   const queryClient = useQueryClient();
 
   const [formState, setFormState] = useState({
@@ -43,12 +52,6 @@ const OnBoarding = () => {
     mutate();
   };
 
-  const handleRandomAvatar = () => {
-    const idx = Math.floor(Math.random() * 100) + 1;
-    const randomAvatar = `https://avatarapi.runflare.run/public/${idx}.png`;
-    setFormState({...formState, profilePic: randomAvatar});
-    toast.success("Avatar changed successfully");
-  };
   return (
     <div className="min-h-screen bg-base-100 flex items-center justify-center px-4 py-8"
     data-theme="forest">
@@ -76,15 +79,6 @@ const OnBoarding = () => {
                     />
                   </div>
                 </div>
-
-                <button
-                  type="button"
-                  className="btn btn-accent"
-                  onClick={handleRandomAvatar}
-                >
-                  <Shuffle size={18} />
-                  Generate Random Avatar
-                </button>
               </div>
 
               {/* Full Name */}
@@ -100,12 +94,18 @@ const OnBoarding = () => {
                     className="grow"
                     placeholder="John Doe"
                     value={formState.fullName}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const newName = e.target.value;
+                      const formattedName = newName.trim().split(/\s+/).join("+");
+                      const newAvatar = newName.trim()
+                        ? `https://eu.ui-avatars.com/api/?name=${formattedName}&size=250`
+                        : "";
                       setFormState({
                         ...formState,
-                        fullName: e.target.value,
-                      })
-                    }
+                        fullName: newName,
+                        profilePic: newAvatar,
+                      });
+                    }}
                   />
                 </label>
               </div>

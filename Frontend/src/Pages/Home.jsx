@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useThemeStore } from "../store/useThemeStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   getOutgoingFriendReqs,
   getRecommendedUsers,
   getUserFriends,
-  sendFriendRequests,
 } from "../lib/api";
 import { Link } from "react-router-dom";
 import {
-  CheckCircleIcon,
-  MapPinIcon,
-  UserPlusIcon,
   UsersIcon,
 } from "lucide-react";
 import NoFriendsFound from "../components/NoFriendsFound";
-import FriendCard, { getLanguageFlag } from "../components/FriendCard";
+import FriendCard from "../components/FriendCard";
 import FeedCard from "../components/FeedCard";
 
 const Home = () => {
-  const queryClient = useQueryClient();
-
-  const [outgoingRequestsIds, setOutgoingRequestsIds] = useState(new Set());
-
   const { data: friends = [], isLoading: loadingFriends } = useQuery({
     queryKey: ["friends"],
     queryFn: getUserFriends,
@@ -38,20 +29,18 @@ const Home = () => {
     queryFn: getOutgoingFriendReqs,
   });
 
-  const { mutate: sendRequestMutation, isPending } = useMutation({
-    mutationFn: sendFriendRequests,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] }),
-  });
-  useEffect(() => {
+  const outgoingRequestsIds = useMemo(() => {
     const outgoingIds = new Set();
     if (outgoingFriendReqs && outgoingFriendReqs.length > 0) {
       outgoingFriendReqs.forEach((req) => {
-        outgoingIds.add(req.recipient._id);
+        if (req.recipient?._id) {
+          outgoingIds.add(req.recipient._id);
+        }
       });
-      setOutgoingRequestsIds(outgoingIds);
     }
+    return outgoingIds;
   }, [outgoingFriendReqs]);
+
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="container mx-auto space-y-10">
@@ -128,5 +117,3 @@ const Home = () => {
 };
 
 export default Home;
-
-const capitialize = (str) => str.charAt(0).toUpperCase() + str.slice(1);

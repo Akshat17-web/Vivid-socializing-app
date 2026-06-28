@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import useAuthUser from '../hooks/useAuthUser';
 import { useQuery } from '@tanstack/react-query';
 import { getStreamToken } from '../lib/api';
@@ -16,6 +16,7 @@ import {
 
 import PageLoader from '../components/PageLoader';
 import { useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
@@ -33,6 +34,8 @@ const CallPage = () => {
     enabled: !!authUser,
   });
   useEffect(() => {
+    let videoClient = null;
+    let callInstance = null;
     const initCall = async () => {
       if(!tokenData?.token || !authUser || !callId) return;
       try{
@@ -42,12 +45,12 @@ const CallPage = () => {
           name: authUser.fullName,
           image: authUser.profilePic,
         }
-        const videoClient = new StreamVideoClient({
+        videoClient = new StreamVideoClient({
           apiKey: STREAM_API_KEY,
           user,
           token: tokenData.token,
         });
-        const callInstance = videoClient.call("default", callId);
+        callInstance = videoClient.call("default", callId);
 
         await callInstance.join({create: true});
 
@@ -62,6 +65,15 @@ const CallPage = () => {
       }
     };
     initCall();
+
+    return () => {
+      if (callInstance) {
+        callInstance.leave().catch(err => console.error("Error leaving call:", err));
+      }
+      if (videoClient) {
+        videoClient.disconnectUser().catch(err => console.error("Error disconnecting video client:", err));
+      }
+    };
   }, [tokenData, authUser, callId]);
 
   if(isLoading || isConnecting) return <PageLoader/>;

@@ -1,4 +1,3 @@
-import React from "react";
 import useAuthUser from "../hooks/useAuthUser";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -71,21 +70,21 @@ const Sidebar = () => {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 ${
+              className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${
                 isActive
-                  ? "bg-primary text-primary-content shadow-md"
-                  : "hover:bg-base-200"
+                  ? "bg-linear-to-r from-primary to-secondary text-primary-content shadow-md shadow-primary/20"
+                  : "hover:bg-base-200/65 text-base-content/80 hover:text-base-content"
               }`}
             >
               <Icon
-                className={`size-5 ${
+                className={`size-5 transition-transform duration-300 group-hover:scale-110 ${
                   isActive
                     ? "text-primary-content"
                     : "text-base-content/70"
                 }`}
               />
 
-              <span className="font-medium">{item.name}</span>
+              <span className="font-semibold tracking-wide">{item.name}</span>
             </Link>
           );
         })}

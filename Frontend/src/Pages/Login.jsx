@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import { useState } from "react";
 import { ShipWheel } from "lucide-react";
 import { axiosInstance } from "../lib/axios.js";
 import { Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({
@@ -11,12 +12,15 @@ const Login = () => {
   });
   const queryClient = useQueryClient();
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       const response = await axiosInstance.post("/auth/login", loginData);
       return response.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Invalid email or password");
+    },
   });
 
   const handlelogin = (e) => {

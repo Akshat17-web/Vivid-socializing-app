@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
 const Home = lazy(() => import("./Pages/Home"));
@@ -8,15 +7,15 @@ const OnBoarding = lazy(() => import("./Pages/OnBoarding"));
 const Notification = lazy(() => import("./Pages/Notification"));
 const ChatPage = lazy(() => import("./Pages/Chat"));
 const CallPage = lazy(() => import("./Pages/Call"));
-import {Toaster, toast} from "react-hot-toast";
-import axios from "axios";
+import {Toaster} from "react-hot-toast";
 import PageLoader from "./components/PageLoader";
 import useAuthUser from "./hooks/useAuthUser";
 import Layout from "./components/Layout";
 import { useThemeStore } from "./store/useThemeStore";
+import FriendsPage from "./Pages/FriendsPage";
 
 const App = () => {
-  const {isLoading, authUser} = useAuthUser();
+  const { authUser } = useAuthUser();
   const {theme } = useThemeStore();
 
   const isAuthenticated = Boolean(authUser);
@@ -37,6 +36,8 @@ const App = () => {
         <Route path="/onboarding" element={isAuthenticated ? (!isOnboarded? (<OnBoarding/>) : (<Navigate to="/"/>)): <Navigate to="/login"/>} />
 
         <Route path="/notification" element={isAuthenticated && isOnboarded ? (<Layout showSidebar={true}><Notification/></Layout>): <Navigate to={!isAuthenticated ? "/login" : "/onboarding"}/>} />
+
+        <Route path="/friends" element={isAuthenticated && isOnboarded ? (<Layout showSidebar={true}><FriendsPage/></Layout>): <Navigate to={!isAuthenticated ? "/login" : "/onboarding"}/>} />
 
         <Route path="/call/:id" element={isAuthenticated && isOnboarded? (<CallPage/>) : <Login/>} />
 

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ShipWheel } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../lib/axios";
-import {Toaster, toast} from "react-hot-toast";
-import {Link} from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
   const [signupData, setSignupData] = useState({
@@ -13,14 +13,14 @@ const SignUp = () => {
   });
 
   const queryClient = useQueryClient();
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       const response = await axiosInstance.post("/auth/signup", signupData);
       return response.data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-    onError: (error) => {
-      toast.error(error.response?.data?.message || "Something went wrong");
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Something went wrong");
     },
   });
 

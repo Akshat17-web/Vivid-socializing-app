@@ -23,14 +23,14 @@ authRouter.post("/signup", async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
-    const idx = Math.floor(Math.random() * 100) + 1;
-    const randomAvatar = `https://avatarapi.runflare.run/public/${idx}.png`;
+    const formattedName = fullName.trim().split(/\s+/).join("+");
+    const defaultAvatar = `https://eu.ui-avatars.com/api/?name=${formattedName}&size=250`;
 
     const newUser = new User({
       fullName,
       email,
       password,
-      profilePic: randomAvatar,
+      profilePic: defaultAvatar,
     });
 
     try{
@@ -41,7 +41,7 @@ authRouter.post("/signup", async (req, res) => {
       });
       console.log(`Stream user created for ${newUser.fullName}`);
     }catch(err){
-      console.log("Error creating Stream user: ", error);
+      console.log("Error creating Stream user: ", err);
     }
 
     await newUser.save();

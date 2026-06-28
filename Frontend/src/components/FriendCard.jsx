@@ -1,56 +1,36 @@
 import { Link } from "react-router-dom";
-import { LANGUAGE_TO_FLAG } from "../constants";
+import { getLanguageFlag, capitalize } from "../lib/utils";
 
 const FriendCard = ({ friend }) => {
+  console.log(friend.profilePic);
   return (
-    <div className="card bg-base-200 hover:shadow-md transition-shadow">
-      <div className="card-body p-4">
+    <div className="card bg-base-200/40 backdrop-blur-md border border-base-content/10 shadow-sm hover:shadow-lg hover:scale-[1.02] hover:border-primary/20 transition-all duration-300 ease-out">
+      <div className="card-body p-4 space-y-2">
         {/* USER INFO */}
-
-        <div className="flex items-center gap-3. mb-3">
-          <div className="avatar size-12">
-            <img src={friend.profilePic} alt={friend.fullName} />
+        <div className="flex items-center gap-3">
+          <div className="avatar size-12 rounded-full ring-2 ring-primary/15 ring-offset-1 ring-offset-base-100">
+            <img src={friend.profilePic} alt={friend.fullName} className="rounded-full" />
           </div>
-
-          <h3 className="font-semibold truncate">{friend.fullName}</h3>
+          <h3 className="font-bold truncate text-base-content tracking-tight">{friend.fullName}</h3>
         </div>
 
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          <span className="badge badge-secondary text-xs">
+        <div className="flex flex-wrap gap-1.5">
+          <span className="badge bg-secondary/15 text-secondary border border-secondary/25 font-semibold px-2.5 py-0.5 text-xs flex items-center gap-1">
             {getLanguageFlag(friend.nativeLanguage)}
-            Native: {friend.nativeLanguage}
+            Native: {capitalize(friend.nativeLanguage)}
           </span>
 
-          <span className="badge badge-outline text-xs">
+          <span className="badge bg-primary/10 text-primary border border-primary/25 font-semibold px-2.5 py-0.5 text-xs flex items-center gap-1">
             {getLanguageFlag(friend.learningLanguage)}
-            Learning: {friend.learningLanguage}
+            Learning: {capitalize(friend.learningLanguage)}
           </span>
         </div>
-        <Link to={`/chat/${friend._id}`} className="btn btn-outline w-full">
-        Message</Link>
+        <Link to={`/chat/${friend._id}`} className="btn btn-primary btn-outline btn-sm w-full mt-2 transition-all duration-200 active:scale-[0.98]">
+          Message
+        </Link>
       </div>
     </div>
   );
 };
 
 export default FriendCard;
-
-export function getLanguageFlag(language) {
-  if (!language) return null;
-
-  const langLower = language.toLowerCase();
-
-  const countryCode = LANGUAGE_TO_FLAG[langLower];
-
-  if (countryCode) {
-    return (
-      <img
-        src={`https://flagcdn.com/24x18/${countryCode}.png`}
-        alt={`s{langLower} flag`}
-        className="h-3 mr-1 inline-block"
-      />
-    );
-  }
-
-  return null;
-}
